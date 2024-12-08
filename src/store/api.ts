@@ -1,6 +1,25 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { Todo, AddTodoRequest, UpdateTodoRequest } from '../types/todo';
 import { v4 as uuidv4 } from 'uuid';
+
+export interface Todo {
+  id: string;
+  title: string;
+  completed: boolean;
+  priority: 'low' | 'medium' | 'high';
+  order?: number;
+} 
+
+export interface AddTodoRequest {
+  title: string;
+  priority: 'low' | 'medium' | 'high';
+}
+
+export interface UpdateTodoRequest {
+  id: string;
+  completed?: boolean;
+  order?: number;
+  title?: string;
+}
 
 export const api = createApi({
   reducerPath: 'todoApi',
@@ -78,6 +97,29 @@ export const api = createApi({
         }
       },
     }),
+    deleteTodo: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/todos/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Todos'],
+      async onQueryStarted(id, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          api.util.updateQueryData('getTodos', undefined, (draft) => {
+            const index = draft.findIndex(todo => todo.id === id);
+            if (index !== -1) {
+              draft.splice(index, 1);
+            }
+          })
+        );
+        try {
+          await queryFulfilled;
+        } catch (err) {
+          console.error('Failed to delete todo:', err);
+          patchResult.undo();
+        }
+      },
+    }),
   }),
 });
 
@@ -85,4 +127,5 @@ export const {
   useGetTodosQuery,
   useAddTodoMutation,
   useUpdateTodoMutation,
+  useDeleteTodoMutation,
 } = api;
