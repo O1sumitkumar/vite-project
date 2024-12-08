@@ -21,7 +21,7 @@ export function App() {
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
     if (newTodo.trim()) {
-      await addTodo({ title: newTodo.trim(), priority });
+      await addTodo({ title: newTodo.trim(), priority, order: todos.length });
       setNewTodo('');
     }
   };
@@ -45,10 +45,10 @@ export function App() {
     const [reorderedItem] = items.splice(sourceIndex, 1);
     items.splice(destinationIndex, 0, reorderedItem);
 
-    await updateTodo({ 
-      id: reorderedItem.id, 
-      order: destinationIndex 
-    });
+    const updatedItems = items.map((item, index) => ({ ...item, order: index }));
+    for (const item of updatedItems) {
+      await updateTodo({ id: item.id, order: item.order });
+    }
   };
 
   const getPriorityColor = (priority: Priority) => {
@@ -89,11 +89,7 @@ export function App() {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
 
-  const sortedTodos = [...todos].sort((a, b) => {
-    const orderA = typeof a.order === 'number' ? a.order : 0;
-    const orderB = typeof b.order === 'number' ? b.order : 0;
-    return orderA - orderB;
-  });
+  const sortedTodos = [...todos].sort((a, b) => (a.order || 0) - (b.order || 0));
 
   return (
     <div className="max-w-xl mx-auto p-4">

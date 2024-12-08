@@ -14,6 +14,7 @@ export interface Todo {
 export interface AddTodoRequest {
   title: string;
   priority: Priority;
+  order: number;
 }
 
 export interface UpdateTodoRequest {
