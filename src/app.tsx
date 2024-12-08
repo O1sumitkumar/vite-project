@@ -86,7 +86,21 @@ export function App() {
   };
 
   if (isLoading) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+    return (
+      <div className="max-w-xl mx-auto p-4">
+        <h1 className="text-3xl font-bold text-center mb-8">Todo App</h1>
+        <ul className="space-y-2">
+          {[...Array(10)].map((_, index) => (
+            <li key={index} className="flex items-center gap-2 p-4 rounded-lg shadow border bg-gray-100 animate-pulse">
+              <div className="h-5 w-5 bg-gray-300 rounded"></div>
+              <div className="flex-1 h-4 bg-gray-300 rounded"></div>
+              <div className="h-4 w-16 bg-gray-300 rounded"></div>
+              <div className="h-5 w-5 bg-gray-300 rounded-full"></div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
   }
 
   const sortedTodos = [...todos].sort((a, b) => (a.order || 0) - (b.order || 0));
