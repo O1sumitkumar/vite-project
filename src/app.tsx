@@ -21,8 +21,8 @@ export function App() {
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
     if (newTodo.trim()) {
-      await addTodo({ title: newTodo.trim(), priority, order: todos.length });
       setNewTodo('');
+      await addTodo({ title: newTodo.trim(), priority, order: todos.length });
     }
   };
 
