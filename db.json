@@ -1,0 +1,14 @@
+{
+	"todos": [
+		{
+			"id": 1,
+			"title": "Learn Redux Toolkit Query",
+			"completed": false
+		},
+		{
+			"id": 2,
+			"title": "Master TypeScript",
+			"completed": true
+		}
+	]
+}
