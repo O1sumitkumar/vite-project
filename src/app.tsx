@@ -81,6 +81,10 @@ export function App() {
     await deleteTodo(id);
   };
 
+  const handlePriorityChange = async (id: string, priority: Priority) => {
+    await updateTodo({ id, priority });
+  };
+
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
@@ -184,9 +188,15 @@ export function App() {
                           >
                             {todo.title}
                           </span>
-                          <span className="text-sm text-gray-500">
-                            {todo.priority}
-                          </span>
+                          <select
+                            value={todo.priority}
+                            onChange={(e) => handlePriorityChange(todo.id, e.currentTarget.value as Priority)}
+                            className="px-2 py-1 bg-transparent border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          >
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                          </select>
                           <button
                             onClick={() => handleDelete(todo.id)}
                             className="p-1 text-red-600 hover:text-red-800 rounded-full hover:bg-red-100"

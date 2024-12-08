@@ -1,17 +1,19 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { v4 as uuidv4 } from 'uuid';
 
+export type Priority = 'low' | 'medium' | 'high';
+
 export interface Todo {
   id: string;
   title: string;
   completed: boolean;
-  priority: 'low' | 'medium' | 'high';
+  priority: Priority;
   order?: number;
 } 
 
 export interface AddTodoRequest {
   title: string;
-  priority: 'low' | 'medium' | 'high';
+  priority: Priority;
 }
 
 export interface UpdateTodoRequest {
@@ -19,6 +21,7 @@ export interface UpdateTodoRequest {
   completed?: boolean;
   order?: number;
   title?: string;
+  priority?: Priority;
 }
 
 export const api = createApi({
@@ -37,9 +40,8 @@ export const api = createApi({
       query: () => '/todos',
       providesTags: ['Todos'],
       transformResponse: (response: Todo[]) => {
-        return response
-          .sort((a, b) => (a.order || 0) - (b.order || 0))
-          .map((todo, index) => ({ ...todo, order: index }));
+        const sorted = [...response].sort((a: Todo, b: Todo) => (a.order || 0) - (b.order || 0));
+        return sorted.map((todo: Todo, index: number) => ({ ...todo, order: index }));
       },
     }),
     addTodo: builder.mutation<Todo, AddTodoRequest>({
